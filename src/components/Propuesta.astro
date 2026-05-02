@@ -1,0 +1,173 @@
+---
+// Propuesta.astro
+---
+
+<div
+  id="pantalla-propuesta"
+  class="relative flex flex-col items-center justify-center min-h-screen px-6 text-center"
+>
+  <!-- Corazón decorativo -->
+  <div class="text-7xl mb-6 animate-bounce">🌸</div>
+
+  <!-- Pregunta -->
+  <h1 class="text-3xl font-bold text-rose-500 mb-2 leading-tight">
+    ¿Quieres ser<br />mi novia?
+  </h1>
+  <p class="text-rose-300 text-sm mb-10">
+    Mi mamá ya te considera su nuera así que no hay de otra 😅💕
+  </p>
+
+  <!-- Botón Sí -->
+  <button
+    id="btn-si"
+    onclick="responderSi()"
+    class="bg-rose-400 hover:bg-rose-500 active:scale-95 text-white font-semibold text-lg px-10 py-4 rounded-full shadow-lg transition-all duration-200 mb-6 w-full max-w-xs"
+  >
+    Sí, claro que sí 💖
+  </button>
+
+  <!-- Botón No (se mueve) -->
+  <button
+    id="btn-no"
+    class="absolute border-2 border-rose-200 text-rose-300 text-base font-bold px-8 py-4 rounded-full transition-all duration-150"
+    style="bottom: 80px; left: 50%; transform: translateX(-50%);"
+  >
+    No
+  </button>
+</div>
+
+<!-- Pantalla 2: gatito + regalo (oculta al inicio) -->
+<div
+  id="pantalla-regalo"
+  class="hidden flex-col items-center justify-center min-h-screen px-6 text-center"
+>
+  <!-- Sticker gatito -->
+  <div class="text-8xl mb-4" style="animation: flotar 1.2s ease-in-out infinite alternate;">
+    🐱🌸
+  </div>
+
+  <h2 class="text-2xl font-bold text-rose-500 mb-1">¡Sabía que dirías que sí!</h2>
+  <p class="text-rose-300 text-sm mb-8">Ahora escoge tu regalo para el Lunes 🎁</p>
+
+  <!-- Opciones de regalo -->
+   <div class="flex flex-col gap-3 w-full max-w-xs mb-12 items-stretch">
+    <label id="r1" class="regalo-opt flex items-center gap-3 border-2 border-rose-200 rounded-2xl px-4 py-4 cursor-pointer bg-white transition-all min-h-[64px]">
+      <input type="radio" name="regalo" value="fresas con crema 🍓" class="accent-rose-400 w-5 h-5" />
+      <span class="text-2xl">🍓</span>
+      <span class="text-sm text-gray-700 text-left">Fresas con crema</span>
+    </label>
+
+    <label id="r2" class="regalo-opt flex items-center gap-3 border-2 border-rose-200 rounded-2xl px-4 py-4 cursor-pointer bg-white transition-all min-h-[64px]">
+      <input type="radio" name="regalo" value="chocolates con una notita secreta solo para ti 🍫" class="accent-rose-400 w-5 h-5" />
+      <span class="text-2xl">🍫</span>
+      <span class="text-sm text-gray-700 text-left">Chocolates con una notita secreta solo para ti</span>
+    </label>
+
+    <label id="r3" class="regalo-opt flex items-center gap-3 border-2 border-rose-200 rounded-2xl px-4 py-4 cursor-pointer bg-white transition-all min-h-[64px]">
+      <input type="radio" name="regalo" value="un elote 🌽" class="accent-rose-400 w-5 h-5" />
+      <span class="text-2xl">🌽</span>
+      <span class="text-sm text-gray-700 text-left">Te invito un elote</span>
+    </label>
+  </div>
+
+  <!-- Botón enviar -->
+  <button
+    id="btn-enviar"
+    disabled
+    onclick="enviar()"
+    class="bg-rose-400 text-white font-semibold text-base px-10 py-4 rounded-full w-full max-w-xs transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed hover:bg-rose-500 active:scale-95"
+  >
+    Enviar respuesta 💌
+  </button>
+</div>
+
+<!-- Pantalla 3: Agradecimiento -->
+<div
+  id="pantalla-gracias"
+  class="hidden flex-col items-center justify-center min-h-screen px-6 text-center gap-4"
+>
+  <div class="text-8xl mb-2">✅</div>
+  <h2 class="text-2xl font-bold text-rose-500">¡Listo!</h2>
+  <p class="text-rose-300 text-sm">Tu respuesta fue enviada 💕</p>
+  <p class="text-gray-400 text-xs mt-4">Vuelve pronto 🌸</p>
+</div>
+
+<style>
+  @keyframes flotar {
+    from { transform: translateY(0px); }
+    to   { transform: translateY(-14px); }
+  }
+  .regalo-opt:has(input:checked) {
+    border-color: #fb7185;
+    background-color: #fff1f2;
+  }
+</style>
+
+<script>
+  const btnNo = document.getElementById('btn-no') as HTMLButtonElement;
+
+  function moverNo() {
+  const btn = btnNo.getBoundingClientRect();
+  const margen = 16;
+  const maxX = window.innerWidth - btn.width - margen;
+  const maxY = window.innerHeight - btn.height - margen;
+  const x = Math.floor(Math.random() * (maxX - margen)) + margen;
+  const y = Math.floor(Math.random() * (maxY - margen)) + margen;
+  btnNo.style.position = 'fixed';
+  btnNo.style.left = x + 'px';
+  btnNo.style.top = y + 'px';
+  btnNo.style.bottom = 'auto';
+  btnNo.style.transform = 'none';
+}
+
+  btnNo.addEventListener('mouseenter', moverNo);
+  btnNo.addEventListener('touchstart', moverNo);
+
+  document.getElementById('btn-si')?.addEventListener('click', () => {
+    document.getElementById('pantalla-propuesta')!.style.display = 'none';
+    const p2 = document.getElementById('pantalla-regalo')!;
+    p2.classList.remove('hidden');
+    p2.classList.add('flex');
+  });
+
+  document.querySelectorAll('input[name="regalo"]').forEach(input => {
+    input.addEventListener('change', () => {
+      (document.getElementById('btn-enviar') as HTMLButtonElement).disabled = false;
+    });
+  });
+
+  document.getElementById('btn-enviar')?.addEventListener('click', async () => {
+    const seleccionado = document.querySelector('input[name="regalo"]:checked') as HTMLInputElement;
+    if (!seleccionado) return;
+
+    const token = import.meta.env.PUBLIC_TELEGRAM_TOKEN;
+    const chatId = import.meta.env.PUBLIC_TELEGRAM_CHAT_ID;
+    const mensaje = `💕 ¡Dijo que SÍ! 🎉\n\nY quiere de regalo: ${seleccionado.value}`;
+
+    const btnEnviar = document.getElementById('btn-enviar') as HTMLButtonElement;
+    btnEnviar.disabled = true;
+    btnEnviar.textContent = 'Enviando... 💌';
+
+    try {
+      await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          chat_id: chatId,
+          text: mensaje
+        })
+      });
+
+      // Ocultar pantalla regalo
+      document.getElementById('pantalla-regalo')!.style.display = 'none';
+
+      // Mostrar pantalla final
+      document.getElementById('pantalla-gracias')!.classList.remove('hidden');
+      document.getElementById('pantalla-gracias')!.classList.add('flex');
+
+    } catch {
+      btnEnviar.disabled = false;
+      btnEnviar.textContent = 'Enviar respuesta 💌';
+    }
+  });
+</script>
